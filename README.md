@@ -4,6 +4,10 @@
 
 ### Objective Function:
 ![image](./assets/objective_function.png)
+### Penalty Term:
+![image](./assets/penalty_term.png)
+### Euclidean Distance
+![image](./assets/euclidean_distance.png)
 
 ## System Design Diagram
 ![image](./assets/QWERTY_layout.png)
