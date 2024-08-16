@@ -1,0 +1,168 @@
+import numpy as np
+import os
+import time
+
+def disp_board(board: list):
+	final_str = ";"
+	for i in range(len(board)):
+		count = 0
+		temp_str = ""
+		for j in range(len(board)):
+			if type(board[i][j]) == int:
+				elem = str(board[i][j])
+			else:
+				elem = " "
+			count += 1
+			temp_str += elem + " "
+
+			if count == 3:
+				temp_str += "| "
+				count = 0
+		final_str += temp_str + "\n"
+		
+	print(final_str)	
+
+def validate_board(board: list) -> bool:
+	'''s1 | s2 | s3
+	   s4 | s5 | s6
+	   s7 | s8 | s9'''
+
+	# Check Squares
+	s1 = board[:3, :3]
+	s2 = board[:3, 3:6]
+	s3 = board[:3, 6:9]
+	s4 = board[3:6, :3]
+	s5 = board[3:6, 3:6]
+	s6 = board[3:6, 6:9]
+	s7 = board[6:9, :3]
+	s8 = board[6:9, 3:6]
+	s9 = board[6:9, 6:9]
+	
+	squares = [s1, s2, s3, s4, s5, s6, s7, s8, s9]
+	for square in squares:
+		square = square.reshape(-1)
+		nonan_square = [_ for _ in square if _ != None]
+
+		if not(len(set(square)) == 9 or len(set(nonan_square)) == len(nonan_square)):
+			return False
+
+	# Check Rows
+	for i in range(9):
+		row = board[i, :]
+		nonan_row = [_ for _ in row if _ != None]
+		if not(len(set(row)) == 9 or len(set(nonan_row)) == len(nonan_row)):
+			return False
+	
+	# Check Columns 
+	for i in range(9):
+		col = board[:, i]
+		nonan_col = [_ for _ in col if _ != None]
+		if not(len(set(col)) == 9 or len(set(nonan_col)) == len(nonan_col)):
+			return False
+
+	return True
+
+def find_next_empt(board: list):
+	for i in range(len(board)):
+		for j in range(len(board[i])):
+			if board[i][j] == None:
+				return i, j
+
+def find_lowest_entropy(board: list):
+	coords = []
+	for i in range(len(board)):
+		for j in range(len(board[i])):
+			if board[i][j] == None:
+				coords.append([i, j, None])
+
+	for i in range(len(coords)):
+		entropy = 1/len(generate_valid_children(board, coords[i][0], coords[i][1]))
+		coords[i][-1] = entropy
+
+	coords.sort(key=lambda l: l[-1])
+
+	return coords
+	
+
+def generate_valid_children(board: list, r : int, c: int) -> list:
+	children = []
+
+	for i in range(1, 10):
+		board[r][c] = i
+
+		if validate_board(board):
+			children.append(board.copy())
+
+	# disp_board(children[1])
+
+	return children
+
+def backtrack(board: list) -> list:
+	# print('Solving')
+	# print()
+	# disp_board(board)
+	# os.system('clear')
+	# print(1)
+	print(find_lowest_entropy(board))
+	return None
+
+	if validate_board(board) and None not in board:
+		return board
+
+	if not(validate_board(board)):
+		return board
+
+	r, c = find_next_empt(board)
+	
+	child_nodes = generate_valid_children(board, r, c)
+
+	# count = 0
+	for child in child_nodes:
+		# disp_board(child)
+		# os.system('clear')
+		# print(count)
+		# count += 1
+		possible_solution = backtrack(child)
+
+		if validate_board(possible_solution) and None not in possible_solution:
+			# disp_board(possible_solution)
+			return possible_solution
+
+	return board
+
+if __name__ == '__main__':
+	board = np.array([
+		[5, 3, None, None, 7, None, None, None, None],
+		[6, None, None, 1, 9, 5, None, None, None],
+		[None, 9, 8, None, None, None, None, 6, None],
+		[8, None, None, None, 6, None, None, None, 3],
+		[4, None, None, 8, None, 3, None, None, 1],
+		[7, None, None, None, 2, None, None, None, 6],
+		[None, 6, None, None, None, None, 2, 8, None],
+		[None, None, None, 4, 1, 9, None, None, 5],
+		[None, None, None, None, 8, None, None, 7, 9]
+	])
+	
+	'''	
+	board = np.array([
+		[8, None, None, None, None, None, None, None, None],
+		[None, None, 3, 6, None, None, None, None, None],
+		[None, 7, None, None, 9, None, 2, None, None],
+		[None, 5, None, None, None, 7, None, None, None],
+		[None, None, None, None, 4, 5, 7, None, None],
+		[None, None, None, 1, None, None, None, 3, None],
+		[None, None, 1, None, None, None, None, 6, 8],
+		[None, None, 8, 5, None, None, None, 1, None],
+		[None, 9, None, None, None, None, 4, None, None],
+	])
+	'''
+
+	disp_board(board)	
+	start = time.time()
+	solution = backtrack(board)
+	print()
+	print(f'Solved Board in {round(time.time() - start, 4)}s')
+	print()
+
+	disp_board(solution)
+
