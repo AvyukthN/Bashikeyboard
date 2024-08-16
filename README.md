@@ -3,7 +3,7 @@
 - Currently I am utilizing gradient descent to iteratively generate layouts
 
 Objective Function:
-![image](./assets/CodeCogsEqn.svg)
+![image](./assets/objective_function.png)
 
 ## System Design Diagram
 ![image](./assets/QWERTY_layout.png)
