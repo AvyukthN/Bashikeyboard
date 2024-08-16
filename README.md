@@ -1,4 +1,7 @@
 # Bashikeyboard
+## QWERTY Layout
+![image](./assets/QWERTY_layout.png)
+
 ## I will (attempt to) design an algorithm to compute the optimal domain specific keyboard layout
 - Currently I am utilizing gradient descent to iteratively generate layouts
 - I essentially take the counts of each of 47 predetermined characters in some file and order the counts based on ascii value (based on the character they correspond to)
@@ -14,5 +17,3 @@
 ### Euclidean Distance
 ![image](./assets/euclidean_distance.png)
 
-## System Design Diagram
-![image](./assets/QWERTY_layout.png)
